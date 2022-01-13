@@ -1,2 +1,3 @@
-# ghas-pr-security-review-app
-GitHub Advanced Security Pull Request Security Team required review GitHub App
+# ghas-reviewer-app
+
+GitHub Advanced Security Reviewer GitHub App.
