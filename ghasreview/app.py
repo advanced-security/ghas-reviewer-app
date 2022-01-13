@@ -15,10 +15,9 @@ githubapp = GitHubApp()
 
 # https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#code_scanning_alert
 
-
+#@githubapp.on("code_scanning_alert.appeared_in_branch")
+#@githubapp.on("code_scanning_alert.reopened")
 @githubapp.on("code_scanning_alert.created")
-@githubapp.on("code_scanning_alert.appeared_in_branch")
-@githubapp.on("code_scanning_alert.reopened")
 def onCodeScanningAlertCreation():
     """Code Scanning Alert event
     https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#code_scanning_alert
