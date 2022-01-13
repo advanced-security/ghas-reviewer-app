@@ -1,0 +1,17 @@
+version: "3.2"
+
+
+services:
+  ghasreview:
+    build: .
+    container_name: ghasreview
+    env_file: .env
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./config:/ghasreview/config
+    security_opt:
+      - no-new-privileges:true
+        #command: python -m ghasreview
+
+

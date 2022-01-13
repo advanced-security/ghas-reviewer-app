@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+flask-githubapp = "*"
+ghapi = "*"
+
+[dev-packages]
+black = "==21.12b0"
+
+[requires]
+python_version = "3.9"
+
+[scripts]
+main = "python -m ghasreview"
+develop = "python -m ghasreview"
+lint = "python -m black ."
