@@ -1,11 +1,16 @@
 import logging
 from typing import Dict
 
-from flask import Flask
+from flask import Flask, redirect, current_app
 from flask_githubapp import GitHubApp
 
-from ghasreview.process import CodeScanningAlert
+from ghasreview import __url__
+from ghasreview.process import CodeScanningAlert, Processes
 
+
+PR_COMMENT = """\
+Security Alerts discovered by "{tool}". Informing @{org_name}/ghas-reviewers team members.
+"""
 
 logger = logging.getLogger("app")
 
@@ -13,10 +18,9 @@ app = Flask("GHAS Review")
 
 githubapp = GitHubApp()
 
+
 # https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#code_scanning_alert
 
-#@githubapp.on("code_scanning_alert.appeared_in_branch")
-#@githubapp.on("code_scanning_alert.reopened")
 @githubapp.on("code_scanning_alert.created")
 def onCodeScanningAlertCreation():
     """Code Scanning Alert event
@@ -34,40 +38,38 @@ def onCodeScanningAlertCreation():
 
     client = githubapp.installation_client
 
-    org_name, repo_name = alert.repository.split("/", 2)
+    owner_name, repo_name = alert.repository.split("/", 2)
 
-    team_name = "ghas-reviewers"
+    team_name = current_app.config.get("GHAS_TEAM")
     pull_number = alert.pullRequest()
 
+    process = Processes(
+        client,
+        alert=alert,
+        team_name=team_name,
+        org_name=owner_name,
+        repo_name=repo_name,
+        pull_number=pull_number
+    )
+
     # Check tool and severity
-    if alert.tool != "CodeQL":
+    tool = current_app.config.get("GHAS_TOOL")
+    if tool and alert.tool != tool:
         logger.debug(f"Tool is not in the list of approved tools: {alert.tool}")
         return
-    if alert.severity not in ["critical", "high", "error", "errors"]:
+    severities = current_app.config.get("GHAS_SEVERITIES")
+    if severities and alert.severity not in severities:
         logger.debug(
             f"Severity is not high enough to get security involved: {alert.severity}"
         )
         return
 
-    # https://docs.github.com/en/rest/reference/pulls#list-requested-reviewers-for-a-pull-request
-    pr_reviewers_req = client.session.get(
-        f"{client.session.base_url}/repos/{org_name}/{repo_name}/pulls/{pull_number}/requested_reviewers"
-    )
-    pr_reviewers = pr_reviewers_req.json()
-    # If the team is already attached to the PR
-    if team_name in pr_reviewers.get("teams"):
-        logger.info(f"Team is already a reviewer")
-        return
-
-    # Add team to PR for review
-    # https://docs.github.com/en/rest/reference/pulls#request-reviewers-for-a-pull-request
-    pr_add_reviewer = client.session.put(
-        f"{client.session.base_url}/repos/{org_name}/{repo_name}/pulls/{pull_number}/requested_reviewers",
-        json={"team_reviewers": [team_name]},
-    )
-    if pr_add_reviewer.status_code != 200:
-        logger.warning(f"Failed to add to PR: {pull_number}")
-
+    # Currently, comment creating a very easy versus adding team to PR
+    if not process.hasCommentedInPR(pull_number, team_name):
+        process.createCommentOnPR(PR_COMMENT.format(
+            tool=alert.tool, org_name=owner_name 
+        ))
+    # process.addTeamToPullRequest(team_name)
     return
 
 
@@ -77,19 +79,28 @@ def onCodeScanningAlertClose():
     alert = CodeScanningAlert()
     alert.payload = githubapp.payload
 
-    logger.debug(f"Alert Opened :: {alert.id} ({alert.ref})")
-
     client = githubapp.installation_client
-
+    team_name = current_app.config.get("GHAS_TEAM")
     # get user
     user = alert.getUser()
-    org_name, repo_name = alert.repository.split("/", 2)
+    owner_name, repo_name = alert.repository.split("/", 2)
+
+    logger.info(f"Processing Alert :: {owner_name}/{repo_name} => {alert.id} ({alert.ref})")
+    process = Processes(
+        client,
+        alert=alert,
+        team_name=team_name,
+        org_name=owner_name,
+        repo_name=repo_name,
+    )
 
     # Check tool and severity
-    if alert.tool != "CodeQL":
+    tool = current_app.config.get("GHAS_TOOL")
+    if tool and alert.tool != tool:
         logger.debug(f"Tool is not in the list of approved tools: {alert.tool}")
         return
-    if alert.severity not in ["critical", "high", "error", "errors"]:
+    severities = current_app.config.get("GHAS_SEVERITIES")
+    if severities and alert.severity not in severities:
         logger.debug(
             f"Severity is not high enough to get security involved: {alert.severity}"
         )
@@ -98,36 +109,25 @@ def onCodeScanningAlertClose():
     # Check if an org account
     try:
         # TODO: Is this needed this org check?
-        client.organization(org_name)
+        client.organization(owner_name)
     except Exception:
         logger.debug(f"Non-organization account is using the App, lets do nothing...")
         return
 
-    team_name = "ghas-reviewers"
+    # Check team
     team_req = client.session.get(
-        f"{client.session.base_url}/orgs/{org_name}/teams/{team_name}"
+        f"{client.session.base_url}/orgs/{owner_name}/teams/{team_name}"
     )
-    team = team_req.json()
 
     if team_req.status_code != 200:
-        logger.debug(f"Team does not exist :: {team_name}")
-        # https://docs.github.com/en/rest/reference/teams#create-a-team
-        team_request = {
-            "name": "GHAS Security",
-            "description": "GitHub Advanced Security Reviewers",
-        }
-        team_creation = client.session.post(
-            f"{client.session.base_url}/orgs/{org_name}/teams", json=team_request
-        )
-        if team_creation.status_code != 200:
-            logger.warning(f"Failed to create team :: {team_name} in {org_name}")
-            logger.debug(f"{team_creation.json()}")
-            return
-        logging.debug(f"Created team for org :: {org_name}")
+        process.createTeam(team_name)
+
+    # TODO: Check and Create Project Board
+    # process.createProjectBoard()
 
     # https://docs.github.com/en/rest/reference/teams#get-team-membership-for-a-user
     membership_res = client.session.get(
-        f"{client.session.base_url}/orgs/{org_name}/teams/{team_name}/memberships/{user}"
+        f"{client.session.base_url}/orgs/{owner_name}/teams/{team_name}/memberships/{user}"
     )
     membership = membership_res.json()
     # check if the users is a member of the security team
@@ -140,24 +140,28 @@ def onCodeScanningAlertClose():
 
     # Open Alert back up
     open_alert = client.session.patch(
-        f"{client.session.base_url}/repos/{org_name}/{repo_name}/code-scanning/alerts/{alert.id}",
+        f"{client.session.base_url}/repos/{owner_name}/{repo_name}/code-scanning/alerts/{alert.id}",
         json={"state": "open"},
     )
     if open_alert.status_code != 200:
         logger.warning(f"Unable to re-open alert")
         return
 
-    # If in a PR, add team to
-    if alert.pullRequest:
+    if alert.isPR():
         logger.debug(f"In PR request")
 
-    # https://github3py.readthedocs.io/en/master/api-reference/pulls.html#github3.pulls.ShortPullRequest.create_review
     return
+
+
+@app.route("/", methods=["GET"])
+def index():
+    logger.info(f"Redirecting user to url...")
+    return redirect(__url__)
 
 
 def run(config: Dict, debug: bool = False):
     app.config.update(**config)
-
     githubapp.init_app(app)
 
-    app.run("0.0.0.0", debug=debug)
+    app.run("0.0.0.0", debug=debug, port=9000)
+

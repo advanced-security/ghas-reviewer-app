@@ -9,7 +9,12 @@ parser.add_argument(
     "--debug", action="store_true", default=bool(os.environ.get("DEBUG"))
 )
 
+parser_github = parser.add_argument_group("GHAS Reviewer")
+parser_github.add_argument("--ghas-team-name", default="ghas-reviewers")
+parser_github.add_argument("--ghas-tool-name", default="CodeQL")
+
 parser_github = parser.add_argument_group("GitHub")
+parser_github.add_argument("--github-app-endpoint", default="/github")
 parser_github.add_argument("--github-app-id", default=os.environ.get("GITHUB_APP_ID"))
 parser_github.add_argument(
     "--github-app-key", default=os.environ.get("GITHUB_APP_KEY_PATH")
@@ -26,10 +31,14 @@ if __name__ == "__main__":
         level=logging.DEBUG if arguments.debug else logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
+    logging.debug("Debug mode enabled")
 
+    logging.debug(f"GHAS Endpoint :: {arguments.github_app_endpoint}")
     logging.info(f"GitHub App ID :: {arguments.github_app_id}")
     logging.info(f"GitHub Key Path :: {arguments.github_app_key}")
     logging.debug(f"GitHub App Secret :: {arguments.github_app_secret}")
+
+    logging.debug(f"GHAS Tool Name :: {arguments.ghas_tool_name}")
 
     if not arguments.github_app_id:
         raise Exception(f"GitHub App ID not set")
@@ -42,9 +51,19 @@ if __name__ == "__main__":
         app_key = handle.read()
 
     config = {
+        # Set the route
+        "GITHUBAPP_ROUTE": arguments.github_app_endpoint,
+        # Team name
+        "GHAS_TEAM": arguments.ghas_team_name,
+        "GHAS_BOARD_NAME": "GHAS Reviewers Audit Board",
+        # Tool and severities to check
+        "GHAS_TOOL": arguments.ghas_tool_name,
+        "GHAS_SEVERITIES": ["critical", "high", "error", "errors"],
+        # GitHub App
         "GITHUBAPP_ID": arguments.github_app_id,
         "GITHUBAPP_KEY": app_key,
         "GITHUBAPP_SECRET": arguments.github_app_secret,
     }
 
     run(config)
+

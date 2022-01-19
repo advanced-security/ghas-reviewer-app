@@ -19,5 +19,6 @@ ENV PYTHONPATH "${PYTHONPATH}:/ghasreview"
 RUN python3 -m pip install pipenv && \
     python3 -m pipenv install --system 
 
-CMD ["python3", "ghasreview/__main__.py"]
+CMD ["python3", "-m", "ghasreview"]
+#CMD ["gunicorn", "wsgi:app", "--bind", "0.0.0.0:9000", "--workers=2"]
 

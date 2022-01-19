@@ -7,6 +7,7 @@ name = "pypi"
 flask = "*"
 flask-githubapp = "*"
 ghapi = "*"
+gunicorn = "*"
 
 [dev-packages]
 black = "==21.12b0"
@@ -15,6 +16,9 @@ black = "==21.12b0"
 python_version = "3.9"
 
 [scripts]
-main = "python -m ghasreview"
-develop = "python -m ghasreview"
+main = "python -m ghasreview --debug"
 lint = "python -m black ."
+# Run flask app
+develop = "gunicorn ghasreview.app:app --bind 0.0.0.0:9000 --log-level=debug --workers=4"
+production = "gunicorn wsgi:app --bind 0.0.0.0:9000 --workers=4"
+
