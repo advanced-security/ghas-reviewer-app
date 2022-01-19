@@ -14,6 +14,20 @@ This allows security experts to provide 4-eyes principal over all security alert
 GHAS Reviewer is a Python based web application which uses Docker to deploy.
 Any solution which supports Docker containers will work.
 
+### Configuration
+
+[Checkout how to setup a GitHub App here](https://docs.github.com/en/developers/apps/building-github-apps/creating-a-github-app).
+
+Store the App key so the service can read it from the path provided along with the other enviroment variables or cli arguments.
+
+**Enviroment Variable:**
+
+```env
+GITHUB_APP_ID=123456
+GITHUB_APP_KEY_PATH=./config/key.pem
+GITHUB_APP_SECRET=123456789012345678901234567890
+```
+
 ### Docker
 
 **Pull / Download image:**
@@ -35,7 +49,7 @@ docker build -t {org}/ghas-reviewer-app .
 docker run \
     --env-file=.env \
     -v ./config:/ghasreview/config \
-    -p 5000:5000 \ 
+    -p 9000:9000 \ 
     ghcr.io/geekmasher/ghas-reviewer-app:main
 ```
 
