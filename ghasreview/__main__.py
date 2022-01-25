@@ -53,7 +53,7 @@ if __name__ == "__main__":
         if not arguments.github_app_key_path and not os.path.exists(arguments.github_app_key_path):
             raise Exception(f"GitHub App Key not set")
 
-        with open(arguments.github_app_key, "r") as handle:
+        with open(arguments.github_app_key_path, "r") as handle:
             app_key = handle.read()
     else:
         logging.info(f"Loading in Key mode")
