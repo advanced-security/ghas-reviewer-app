@@ -153,6 +153,14 @@ def onCodeScanningAlertClose():
     return
 
 
+@app.errorhandler(500)
+def page_not_found(error):
+    data = {"error": 500}
+    if app.debug:
+        data["msg"] = str(error)
+    resp = jsonify(**data)
+    return resp
+
 @app.route("/", methods=["GET"])
 def index():
     logger.info(f"Redirecting user to url...")
