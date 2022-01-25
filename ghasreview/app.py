@@ -1,7 +1,7 @@
 import logging
 from typing import Dict
 
-from flask import Flask, redirect, current_app
+from flask import Flask, redirect, current_app, jsonify
 from flask_githubapp import GitHubApp
 
 from ghasreview import __url__
@@ -157,6 +157,11 @@ def onCodeScanningAlertClose():
 def index():
     logger.info(f"Redirecting user to url...")
     return redirect(__url__)
+
+
+@app.route("/healthcheck", methods=["GET"])
+def healthcheck():
+    return jsonify({"status": "healthy"})
 
 
 def run(config: Dict, debug: bool = False):
