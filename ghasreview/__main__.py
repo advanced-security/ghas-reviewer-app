@@ -17,7 +17,10 @@ parser_github = parser.add_argument_group("GitHub")
 parser_github.add_argument("--github-app-endpoint", default="/github")
 parser_github.add_argument("--github-app-id", default=os.environ.get("GITHUB_APP_ID"))
 parser_github.add_argument(
-    "--github-app-key", default=os.environ.get("GITHUB_APP_KEY_PATH")
+    "--github-app-key-path", default=os.environ.get("GITHUB_APP_KEY_PATH")
+)
+parser_github.add_argument(
+    "--github-app-key", default=os.environ.get("GITHUB_APP_KEY")
 )
 parser_github.add_argument(
     "--github-app-secret", default=os.environ.get("GITHUB_APP_SECRET")
@@ -35,7 +38,8 @@ if __name__ == "__main__":
 
     logging.debug(f"GHAS Endpoint :: {arguments.github_app_endpoint}")
     logging.info(f"GitHub App ID :: {arguments.github_app_id}")
-    logging.info(f"GitHub Key Path :: {arguments.github_app_key}")
+    logging.debug(f"GitHub Key :: {arguments.github_app_key}")
+    logging.info(f"GitHub Key Path :: {arguments.github_app_key_path}")
     logging.debug(f"GitHub App Secret :: {arguments.github_app_secret}")
 
     logging.debug(f"GHAS Tool Name :: {arguments.ghas_tool_name}")
@@ -44,11 +48,15 @@ if __name__ == "__main__":
         raise Exception(f"GitHub App ID not set")
     if not arguments.github_app_secret:
         raise Exception(f"GitHub App Secret not set")
-    if not arguments.github_app_key and not os.path.exists(arguments.github_app_key):
-        raise Exception(f"GitHub App Key not set")
+    if not arguments.github_app_key:
+        # Try and load from file
+        if not arguments.github_app_key_path and not os.path.exists(arguments.github_app_key_path):
+            raise Exception(f"GitHub App Key not set")
 
-    with open(arguments.github_app_key, "r") as handle:
-        app_key = handle.read()
+        with open(arguments.github_app_key, "r") as handle:
+            app_key = handle.read()
+    else:
+        app_key = arguments.github_app_key
 
     config = {
         # Set the route
