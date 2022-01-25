@@ -49,7 +49,7 @@ docker build -t {org}/ghas-reviewer-app .
 docker run \
     --env-file=.env \
     -v ./config:/ghasreview/config \
-    -p 9000:9000 \ 
+    -p 8000:8000 \ 
     ghcr.io/geekmasher/ghas-reviewer-app:main
 ```
 

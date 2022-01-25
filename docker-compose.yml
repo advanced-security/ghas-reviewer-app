@@ -3,12 +3,11 @@ version: "3.2"
 
 services:
   ghasreview:
-    build: .
-    #image: ghcr.io/geekmasher/ghas-reviewer-app:main
+    image: ghcr.io/geekmasher/ghas-reviewer-app:main
     container_name: ghasreview
     env_file: .env
     ports:
-      - "9000:9000"
+      - "8000:8000"
     volumes:
       - ./config:/ghasreview/config
     security_opt:
