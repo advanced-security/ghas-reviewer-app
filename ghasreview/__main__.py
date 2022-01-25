@@ -56,6 +56,7 @@ if __name__ == "__main__":
         with open(arguments.github_app_key, "r") as handle:
             app_key = handle.read()
     else:
+        logging.info(f"Loading in Key mode")
         app_key = arguments.github_app_key
 
     config = {

@@ -168,5 +168,5 @@ def run(config: Dict, debug: bool = False):
     app.config.update(**config)
     githubapp.init_app(app)
 
-    app.run("0.0.0.0", debug=debug, port=80)
+    app.run("0.0.0.0", debug=debug, port=8000)
 
