@@ -34,7 +34,7 @@ GITHUB_APP_SECRET=123456789012345678901234567890
 
 ```bash
 # Pull latest (or a release)
-docker pull ghcr.io/geekmasher/ghas-reviewer-app:main
+docker pull ghcr.io/advanced-security/ghas-reviewer-app:main
 ```
 
 **Or Build From Source:**
@@ -50,7 +50,7 @@ docker run \
     --env-file=.env \
     -v ./config:/ghasreview/config \
     -p 8000:8000 \ 
-    ghcr.io/geekmasher/ghas-reviewer-app:main
+    ghcr.io/advanced-security/ghas-reviewer-app:main
 ```
 
 ### Docker Compose
@@ -70,7 +70,7 @@ Here are a list of feature built into the app and limitations
 - Adds comment in Pull Request to notify security reviewer team
 
 
-**Limitations**
+## Limitations
 
 - Pull Request require team approval
 - No Dependabot or Secret Scanning support
