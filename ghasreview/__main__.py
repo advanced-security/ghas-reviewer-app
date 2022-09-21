@@ -2,6 +2,8 @@ import os
 import logging
 from argparse import ArgumentParser
 
+from cryptography import x509
+
 from ghasreview.app import run
 
 parser = ArgumentParser("GHAS Review")
@@ -57,8 +59,8 @@ if __name__ == "__main__":
             app_key = handle.read()
     else:
         logging.info(f"Loading in Key mode")
-        app_key = arguments.github_app_key
-
+        app_key = arguments.github_app_key.replace("\\n", "\n")
+   
     config = {
         # Set the route
         "GITHUBAPP_ROUTE": arguments.github_app_endpoint,
