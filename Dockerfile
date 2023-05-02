@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.10
 
 ARG user=python
 ARG home=/home/$user
@@ -17,7 +17,7 @@ COPY . .
 
 ENV PYTHONPATH "${PYTHONPATH}:/ghasreview"
 RUN python3 -m pip install pipenv && \
-    python3 -m pipenv install --system 
+    python3 -m pipenv sync --system 
 
 CMD ["python3", "-m", "ghasreview"]
 #CMD ["gunicorn", "wsgi:app", "--bind", "0.0.0.0:8000", "--workers=2"]
