@@ -13,11 +13,12 @@ gunicorn = "*"
 black = "==21.12b0"
 
 [requires]
-python_version = "3.9"
+python_version = "3.10"
 
 [scripts]
 main = "python -m ghasreview --debug"
-lint = "python -m black ."
+fmt = "python -m black ."
+lint = "python -m black --check ."
 # Run flask app
 develop = "gunicorn ghasreview.app:app --bind 0.0.0.0:9000 --log-level=debug --workers=4"
 production = "gunicorn wsgi:app --bind 0.0.0.0:9000 --workers=4"
