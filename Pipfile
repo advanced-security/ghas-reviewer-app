@@ -13,9 +13,6 @@ ghastoolkit = "*"
 [dev-packages]
 black = "==23.11.0"
 
-[requires]
-python_version = "3.11"
-
 [scripts]
 main = "python -m ghasreview --debug"
 fmt = "python -m black ."
