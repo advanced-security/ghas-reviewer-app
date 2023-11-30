@@ -2,8 +2,6 @@ import os
 import logging
 from argparse import ArgumentParser
 
-from cryptography import x509
-
 from ghasreview.app import run
 
 parser = ArgumentParser("GHAS Review")
