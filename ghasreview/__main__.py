@@ -2,14 +2,13 @@ import os
 import logging
 from argparse import ArgumentParser
 
-from cryptography import x509
-
 from ghasreview.app import run
 
 parser = ArgumentParser("GHAS Review")
 parser.add_argument(
     "--debug", action="store_true", default=bool(os.environ.get("DEBUG"))
 )
+parser.add_argument("--test-mode", action="store_true", default=bool(os.environ.get("TEST_MODE", 0)))
 
 parser_github = parser.add_argument_group("GHAS Reviewer")
 parser_github.add_argument("--ghas-team-name", default="ghas-reviewers")
@@ -46,6 +45,10 @@ if __name__ == "__main__":
 
     logging.debug(f"GHAS Tool Name :: {arguments.ghas_tool_name}")
 
+    if arguments.test_mode:
+        logging.info(f"Testing mode enabled, exiting...")
+        exit(0)
+
     if not arguments.github_app_id:
         raise Exception(f"GitHub App ID not set")
     if not arguments.github_app_secret:
@@ -77,4 +80,3 @@ if __name__ == "__main__":
     }
 
     run(config)
-

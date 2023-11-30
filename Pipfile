@@ -4,22 +4,22 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
+flask = "==2.3.3"
 flask-githubapp = "*"
 ghapi = "*"
 gunicorn = "*"
+ghastoolkit = "*"
 
 [dev-packages]
 black = "==23.11.0"
-
-[requires]
-python_version = "3.10"
 
 [scripts]
 main = "python -m ghasreview --debug"
 fmt = "python -m black ."
 lint = "python -m black --check ."
 # Run flask app
+watch = "gunicorn ghasreview.app:app --reload --bind 0.0.0.0:9000"
 develop = "gunicorn ghasreview.app:app --bind 0.0.0.0:9000 --log-level=debug --workers=4"
 production = "gunicorn wsgi:app --bind 0.0.0.0:9000 --workers=4"
-
+# Tests
+test-e2e = "python -m ghasreview --test-mode"
