@@ -11,7 +11,7 @@ gunicorn = "*"
 ghastoolkit = "*"
 
 [dev-packages]
-black = "==23.11.0"
+black = "==23.12.1"
 
 [scripts]
 main = "python -m ghasreview --debug"
