@@ -1,0 +1,12 @@
+name: "Markdown Lint"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  lint:
+    uses: advanced-security/reusable-workflows/.github/workflows/markdown-lint.yml@main
+    secrets: inherit
