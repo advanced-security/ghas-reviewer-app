@@ -1,0 +1,10 @@
+name: Dependency Review
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  dependency-review:
+    uses: advanced-security/reusable-workflows/.github/workflows/dependency-review.yml@main
+    secrets: inherit
