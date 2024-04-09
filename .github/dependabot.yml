@@ -6,7 +6,8 @@ updates:
     schedule:
       interval: "weekly"
     reviewers:
-      - "advanced-security-maintainers"
+      - "GeekMasher"
+      - "advanced-security/oss-maintainers"
     target-branch: "main"
     commit-message:
       prefix: deps
@@ -25,7 +26,8 @@ updates:
     schedule:
       interval: "weekly"
     reviewers:
-      - "advanced-security-maintainers"
+      - "GeekMasher"
+      - "advanced-security/oss-maintainers"
     target-branch: "main"
     commit-message:
       prefix: deps
@@ -44,7 +46,8 @@ updates:
     schedule:
       interval: "weekly"
     reviewers:
-      - "advanced-security-maintainers"
+      - "GeekMasher"
+      - "advanced-security/oss-maintainers"
     target-branch: "main"
     commit-message:
       prefix: deps
