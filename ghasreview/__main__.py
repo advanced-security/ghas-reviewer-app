@@ -46,7 +46,7 @@ if __name__ == "__main__":
     logging.debug(f"GHAS Tool Name :: {arguments.ghas_tool_name}")
 
     if arguments.test_mode:
-        logging.info(f"Testing mode enabled, exiting...")
+        logging.info("Testing mode enabled, exiting...")
         exit(0)
 
     if not arguments.github_app_id:

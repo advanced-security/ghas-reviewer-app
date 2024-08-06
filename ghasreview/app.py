@@ -2,7 +2,7 @@ import logging
 from typing import Dict
 
 from flask import Flask, redirect, current_app, jsonify
-from flask_githubapp import GitHubApp
+from ghasreview.flask_githubapp import GitHubApp
 
 from ghasreview import __url__
 from ghasreview.process import CodeScanningAlert, Processes
@@ -177,4 +177,3 @@ def run(config: Dict, debug: bool = False):
     githubapp.init_app(app)
 
     app.run("0.0.0.0", debug=debug, port=8000)
-

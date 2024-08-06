@@ -4,14 +4,14 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "==2.3.3"
-flask-githubapp = "*"
+flask = "==3.0.3"
 ghapi = "*"
 gunicorn = "*"
 ghastoolkit = "*"
+"github3.py" = "*"
 
 [dev-packages]
-black = "==24.4.2"
+black = "*"
 
 [scripts]
 main = "python -m ghasreview --debug"
