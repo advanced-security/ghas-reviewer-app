@@ -8,6 +8,7 @@ flask = "==3.0.3"
 ghapi = "*"
 gunicorn = "*"
 ghastoolkit = "*"
+"github3.py" = "*"
 
 [dev-packages]
 black = "*"
