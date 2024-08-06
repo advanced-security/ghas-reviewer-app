@@ -1,3 +1,4 @@
+<!-- markdownlint-disable -->
 <div align="center">
 <h1>GHAS Reviewer App</h1>
 
@@ -8,6 +9,7 @@
 [![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./LICENSE)
 
 </div>
+<!-- markdownlint-restore -->
 
 ## Overview
 
@@ -128,5 +130,4 @@ Please refer to [MIT][license] for the full terms.
 [github-codescanning]: https://docs.github.com/en/code-security/code-scanning/introduction-to-code-scanning/about-code-scanning
 [github-secretscanning]: https://docs.github.com/en/code-security/secret-scanning/about-secret-scanning
 [github-supplychain]: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-supply-chain-security
-[requirements]: https://github.com/advanced-security/ghas-reviewer-app#requirements
 [permissions]: https://github.com/advanced-security/ghas-reviewer-app#permissions
