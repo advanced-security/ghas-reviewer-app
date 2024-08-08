@@ -1,6 +1,6 @@
 
 .env
-config/
+/config
 samples/
 .build.json
 test.py
@@ -134,3 +134,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# Added by cargo
+
+/target

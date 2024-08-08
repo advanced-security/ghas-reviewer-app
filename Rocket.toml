@@ -1,0 +1,11 @@
+[debug]
+address = "127.0.0.1"
+port = 9000
+workers = 1
+log_level = "debug"
+
+[release]
+address = "0.0.0.0"
+port = 9000
+workers = 4
+log_level = "normal"
