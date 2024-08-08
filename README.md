@@ -25,7 +25,7 @@ This allows security experts to provide 4-eyes principle over all security alert
 ## ✨ Features
 
 - Re-open closed alerts if an unapproved users changes the alert
-- Notifies Security Team for vulneraiblities found in PR and assigns them as reviewers. __Requires security team to be repository collaborators.__
+- Notifies Security Team for vulneraiblities found in PR and assigns them as reviewers. **Requires security team to be repository collaborators.**
 - GitHub Advanced Security Features
   - [x] [Code Scanning][github-codescanning] alerts
   - [x] [Secret Scanning][github-secretscanning] alerts
@@ -74,12 +74,12 @@ If you choose to pass the private key via a file just store the key in a file an
 The GitHub App requires the following permissions:
 
 - Repository
+
   - [x] Code scanning alerts: Read & Write
   - [x] Dependabot alerts: Read & Write
   - [x] Secrets scanning alerts: Read & Write
   - [x] Issues: Read & Write
   - [x] Pull requests: Read & Write
-
 
 - Webhook events
   - [x] Code scanning alerts
@@ -115,7 +115,7 @@ docker build -t advanced-security/ghas-reviewer-app .
 docker run \
     --env-file=.env \
     -v ./config:/ghasreview/config \
-    -p 9000:9000 \ 
+    -p 9000:9000 \
     ghcr.io/advanced-security/ghas-reviewer-app:main
 ```
 
@@ -125,11 +125,11 @@ or run it locally
 docker run \
     --env-file=.env \
     -v ./config:/ghasreview/config \
-    -p 9000:9000 \ 
+    -p 9000:9000 \
     advanced-security/ghas-reviewer-app
 ```
 
-**Run
+\*\*Run
 
 ### Docker Compose
 
@@ -140,7 +140,6 @@ docker-compose build
 docker-compose up -d
 ```
 
-
 ## Local Development
 
 If you want to run the application locally you can use the following the same steps as abouve meaning you need to creeate an GitHub App, store the private key and set the environment variables.
@@ -149,15 +148,14 @@ After you have set the environment variables you can run the application using t
 
 ```bash
 # We are using Pipenv for dependency management
-pip install pipenv 
+pip install pipenv
 
 # Install dependencies
-pipenv install --dev 
+pipenv install --dev
 
 # Run the application
 pipenv run develop
 ```
-
 
 ## Limitations
 
@@ -186,5 +184,4 @@ Please refer to [MIT][license] for the full terms.
 [github-codescanning]: https://docs.github.com/en/code-security/code-scanning/introduction-to-code-scanning/about-code-scanning
 [github-secretscanning]: https://docs.github.com/en/code-security/secret-scanning/about-secret-scanning
 [github-supplychain]: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-supply-chain-security
-[requirements]: https://github.com/advanced-security/ghas-reviewer-app#requirements
 [permissions]: https://github.com/advanced-security/ghas-reviewer-app#permissions
