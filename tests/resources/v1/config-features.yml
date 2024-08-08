@@ -1,0 +1,8 @@
+project-board:
+  enabled: true
+  title: Project board
+  description: Manage your project board
+  fields:
+    - name: "Name"
+    - name: "Tool"
+    - name: "Short Description"
