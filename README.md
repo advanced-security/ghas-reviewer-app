@@ -25,10 +25,11 @@ This allows security experts to provide 4-eyes principle over all security alert
 ## ✨ Features
 
 - Re-open closed alerts if an unapproved users changes the alert
+- Notifies Security Team for vulneraiblities found in PR and assigns them as reviewers. **Requires security team to be repository collaborators.**
 - GitHub Advanced Security Features
   - [x] [Code Scanning][github-codescanning] alerts
-  - [ ] [Secret Scanning][github-secretscanning] alerts
-  - [ ] [Dependabot][github-supplychain] alerts
+  - [x] [Secret Scanning][github-secretscanning] alerts
+  - [x] [Dependabot][github-supplychain] alerts
 
 ## ⚡️ Requirements
 
@@ -49,6 +50,8 @@ Store the App key so the service can read it from the path provided along with t
 
 **Environment Variable:**
 
+Create a `.env` file in the root of the project with the following environment variables.
+
 ```env
 # Application ID
 GITHUB_APP_ID=123456
@@ -58,14 +61,30 @@ GITHUB_APP_KEY_PATH=./config/key.pem
 GITHUB_APP_KEY=-----BEGIN PRIVATE KEY-----\n...
 # Webhook Secret
 GITHUB_APP_SECRET=123456789012345678901234567890
+GITHUB_APP_ENDPOINT=/
+GITHUB_GHAS_TEAM="sec_team"
 ```
+
+You can also use the following CLI arguments to pass the configuration.
+
+If you choose to pass the private key via a file just store the key in a file and pass the path to the file. In our case, we store the key in `./config/key.pem`. You will later mount this file into the container.
 
 #### Permissions
 
 The GitHub App requires the following permissions:
 
 - Repository
-  - [x] Security Events: Read & Write
+
+  - [x] Code scanning alerts: Read & Write
+  - [x] Dependabot alerts: Read & Write
+  - [x] Secrets scanning alerts: Read & Write
+  - [x] Issues: Read & Write
+  - [x] Pull requests: Read & Write
+
+- Webhook events
+  - [x] Code scanning alerts
+  - [x] Dependabot alerts
+  - [x] Secret scanning alerts
 
 ### Container / Docker
 
@@ -81,7 +100,13 @@ docker pull ghcr.io/advanced-security/ghas-reviewer-app:main
 **Or Build From Source:**
 
 ```bash
-docker build -t {org}/ghas-reviewer-app .
+docker build -t advanced-security/ghas-reviewer-app .
+```
+
+or build locally
+
+```bash
+docker build -t advanced-security/ghas-reviewer-app .
 ```
 
 **Run Docker Image:**
@@ -90,9 +115,21 @@ docker build -t {org}/ghas-reviewer-app .
 docker run \
     --env-file=.env \
     -v ./config:/ghasreview/config \
-    -p 8000:8000 \ 
+    -p 9000:9000 \
     ghcr.io/advanced-security/ghas-reviewer-app:main
 ```
+
+or run it locally
+
+```bash
+docker run \
+    --env-file=.env \
+    -v ./config:/ghasreview/config \
+    -p 9000:9000 \
+    advanced-security/ghas-reviewer-app
+```
+
+\*\*Run
 
 ### Docker Compose
 
@@ -103,14 +140,31 @@ docker-compose build
 docker-compose up -d
 ```
 
+## Local Development
+
+If you want to run the application locally you can use the following the same steps as abouve meaning you need to creeate an GitHub App, store the private key and set the environment variables.
+
+After you have set the environment variables you can run the application using the following commands.
+
+```bash
+# We are using Pipenv for dependency management
+pip install pipenv
+
+# Install dependencies
+pipenv install --dev
+
+# Run the application
+pipenv run develop
+```
+
 ## Limitations
 
-- Pull Request require team approval
-- No Dependabot or Secret Scanning support
+- Pull Request require team approval. The security team needs to be repository collaborator.
 
 ## Maintainers / Contributors
 
 - [@GeekMasher](https://github.com/GeekMasher) - Author / Core Maintainer
+- [@theztefan](https://github.com/theztefan) - Contributor
 
 ## Support
 

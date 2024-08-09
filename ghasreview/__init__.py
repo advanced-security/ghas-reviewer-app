@@ -1,3 +1,3 @@
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
-__url__ = "https://github.com/GeekMasher/ghas-reviewer-app"
+__url__ = "https://github.com/advanced-security/ghas-reviewer-app"
