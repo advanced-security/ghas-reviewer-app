@@ -9,6 +9,7 @@ ghapi = "*"
 gunicorn = "*"
 ghastoolkit = "*"
 "github3.py" = "*"
+python-dotenv = "*"
 
 [dev-packages]
 black = "*"
@@ -20,6 +21,6 @@ lint = "python -m black --check ."
 # Run flask app
 watch = "gunicorn ghasreview.app:app --reload --bind 0.0.0.0:9000"
 develop = "gunicorn ghasreview.app:app --bind 0.0.0.0:9000 --log-level=debug --workers=4"
-production = "gunicorn wsgi:app --bind 0.0.0.0:9000 --workers=4"
+production = "gunicorn ghasreview.app:app --config gunicorn_config.py"
 # Tests
 test-e2e = "python -m ghasreview --test-mode"
