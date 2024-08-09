@@ -1,0 +1,12 @@
+teams:
+  - name: "ghas-reviewers"
+    default: true
+
+  - name: "octo-reviewers"
+    repositories:
+      - "octocat/hello-world"
+      - "octocat/earth"
+
+  - name: "sec-reviewers"
+    repositories:
+      - "octocat/security-repo"

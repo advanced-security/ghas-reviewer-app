@@ -1,0 +1,15 @@
+mutation CreateProjectV2($input: CreateProjectV2Input!) {
+  createProjectV2(input: $input) {
+    projectV2 {
+      title
+      shortDescription
+      fields {
+        edges {
+          node {
+            name
+          }
+        }
+      }
+    }
+  }
+}
