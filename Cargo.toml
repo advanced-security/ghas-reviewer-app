@@ -14,8 +14,7 @@ env_logger = "0.11"
 figment = { version = "0.10", features = ["yaml", "env"] }
 log = "0.4"
 octoapp = { version = "0.2.1", features = ["rocket"] }
-# octocrab = "^0.39"
-octocrab = { path = "../../open-source/octocrab" }
+octocrab = "^0.39"
 rocket = { version = "^0.5", features = ["json"] }
 serde = "1"
 serde_json = "1.0.122"

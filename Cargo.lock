@@ -650,7 +650,7 @@ dependencies = [
  "figment",
  "log",
  "octoapp",
- "octocrab 0.39.0 (git+https://github.com/geekmasher/octocrab?branch=codescanning-webhooks)",
+ "octocrab",
  "rocket",
  "serde",
  "serde_json",
@@ -1179,7 +1179,7 @@ dependencies = [
  "hex",
  "hmac",
  "jsonwebtoken",
- "octocrab 0.39.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "octocrab",
  "rocket",
  "serde",
  "serde_json",
@@ -1193,44 +1193,6 @@ name = "octocrab"
 version = "0.39.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9305e4c99543ecd0f42bd659c9e9d6ca7115fe5e37d5c85a7277b1db0d4c4101"
-dependencies = [
- "arc-swap",
- "async-trait",
- "base64 0.22.1",
- "bytes",
- "cfg-if",
- "chrono",
- "either",
- "futures",
- "futures-util",
- "http 1.1.0",
- "http-body 1.0.1",
- "http-body-util",
- "hyper 1.4.1",
- "hyper-rustls",
- "hyper-timeout",
- "hyper-util",
- "jsonwebtoken",
- "once_cell",
- "percent-encoding",
- "pin-project",
- "secrecy",
- "serde",
- "serde_json",
- "serde_path_to_error",
- "serde_urlencoded",
- "snafu",
- "tokio",
- "tower",
- "tower-http",
- "tracing",
- "url",
-]
-
-[[package]]
-name = "octocrab"
-version = "0.39.0"
-source = "git+https://github.com/geekmasher/octocrab?branch=codescanning-webhooks#486ab2fa13920aa7247526ee27ed466e39d7c02d"
 dependencies = [
  "arc-swap",
  "async-trait",

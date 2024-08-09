@@ -3,7 +3,6 @@
 #[macro_use]
 extern crate rocket;
 
-use actions::{codescanning::CodeScanningAction, Action};
 use anyhow::Result;
 use octoapp::prelude::*;
 use rocket::{http::Status, State};
@@ -12,7 +11,10 @@ mod actions;
 mod cli;
 mod config;
 
-use config::Config;
+pub use actions::{
+    Action, CodeScanningAction, DependabotAction, ProjectBoardAction, SecretScanningAction,
+};
+pub use config::Config;
 
 pub struct AppState {
     pub config: Config,
@@ -41,14 +43,27 @@ async fn webhook(
         }
         Event::DependabotAlert(alert) => {
             log::info!("Received a DependabotAlert event: {:?}", alert);
+
+            if DependabotAction::check(&state.config, &octo).unwrap() {
+                DependabotAction::run(&state.config, &octo, &alert)
+                    .await
+                    .unwrap();
+            }
         }
         Event::SecretScanningAlert(alert) => {
             log::info!("Received a SecretScanningAlert event: {:?}", alert);
+
+            if SecretScanningAction::check(&state.config, &octo).unwrap() {
+                SecretScanningAction::run(&state.config, &octo, &alert)
+                    .await
+                    .unwrap();
+            }
         }
         _ => {
             log::warn!("Received an unknown event");
         }
     }
+
     (Status::Ok, "Received Event".to_string())
 }
 
