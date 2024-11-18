@@ -11,6 +11,10 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  container:
+    uses: advanced-security/reusable-workflows/.github/workflows/container-security.yml@main
+    secrets: inherit
+
   test-e2e:
     runs-on: ubuntu-latest
     permissions:
