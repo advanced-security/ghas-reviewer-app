@@ -1,4 +1,4 @@
-FROM python:alpine3.19
+FROM python:3.13-alpine
 
 ARG user=python
 ARG home=/home/$user
@@ -9,15 +9,14 @@ RUN adduser \
     $user
 
 USER python
-ENV PATH "${PATH}:/home/${user}/.local/bin"
+ENV PATH="${PATH}:/home/${user}/.local/bin"
 
 WORKDIR /ghasreview
 
 COPY . .
 
-ENV PYTHONPATH "${PYTHONPATH}:/ghasreview"
+ENV PYTHONPATH="/ghasreview"
 RUN python3 -m pip install pipenv && \
     python3 -m pipenv sync --system 
 
-#CMD ["python3", "-m", "ghasreview"]
 CMD ["pipenv", "run", "production"]
