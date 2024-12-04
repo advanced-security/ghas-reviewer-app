@@ -94,7 +94,7 @@ The application is designed to be run in a container, this allows for easy deplo
 
 ```bash
 # Pull latest (or a release)
-docker pull ghcr.io/advanced-security/ghas-reviewer-app:main
+docker pull ghcr.io/advanced-security/ghas-reviewer-app:v0.6.0
 ```
 
 **Or Build From Source:**
@@ -116,7 +116,7 @@ docker run \
     --env-file=.env \
     -v ./config:/ghasreview/config \
     -p 9000:9000 \
-    ghcr.io/advanced-security/ghas-reviewer-app:main
+    ghcr.io/advanced-security/ghas-reviewer-app:v0.6.0
 ```
 
 or run it locally
