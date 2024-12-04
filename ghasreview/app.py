@@ -145,12 +145,12 @@ def onCodeScanningAlertClose():
         return {"message": "Severity is not high enough to get security involved"}
 
     # Check if an org account
-    try:
-        # TODO: Is this needed this org check?
-        alert.client.organization(alert.owner)
-    except Exception:
-        logger.debug(f"Non-organization account is using the App, lets do nothing...")
-        return {"message": "Non-organization account is using the App. Do nothing."}
+    # try:
+    #     # TODO: Is this needed this org check?
+    #     alert.client.organization(alert.owner)
+    # except Exception:
+    #     logger.debug(f"Non-organization account is using the App, lets do nothing...")
+    #     return {"message": "Non-organization account is using the App. Do nothing."}
 
     # Check team
     if not alert.client.checkIfTeamExists(alert.owner, config.get("GHAS_TEAM")):
