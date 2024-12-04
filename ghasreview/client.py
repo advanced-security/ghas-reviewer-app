@@ -26,7 +26,7 @@ class Client:
             f"{self.installation_client.session.base_url}/orgs/{owner_name}/teams/{team_name}",
         )
         if team.status_code != 200:
-            logger.debug(f"Team does not exist :: {team_name} - {team.json()}")
+            logger.error(f"Team does not exist :: {team_name} - {team.json()}")
             return False
 
         membership_res = self.callApi(
@@ -75,7 +75,7 @@ class Client:
             "description": "GitHub Advanced Security Reviewers",
         }
         team_creation = self.installation_client.session.post(
-            f"{self.base_url}/orgs/{owner}/teams", json=team_request
+            f"{self.installation_client.session.base_url}/orgs/{owner}/teams", json=team_request
         )
         if team_creation.status_code != 200:
             logger.warning(f"Failed to create team :: {team_name} in {owner}")
