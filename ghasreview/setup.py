@@ -25,6 +25,9 @@ def parse_arguments():
     parser_github.add_argument(
         "--ghas-tool-name", default=os.environ.get("GITHUB_TOOL_NAME") or "CodeQL"
     )
+    parser_github.add_argument(
+        "--ghas-comment-required", default=bool(os.environ.get("GITHUB_GHAS_COMMENT_REQUIRED", 0))
+    )
 
     parser_github = parser.add_argument_group("GitHub")
     parser_github.add_argument(
@@ -59,6 +62,7 @@ def setup_logging(arguments):
     logging.info(f"GitHub Key Path :: {arguments.github_app_key_path}")
     logging.debug(f"GitHub App Secret :: {arguments.github_app_secret}")
     logging.debug(f"GHAS Tool Name :: {arguments.ghas_tool_name}")
+    logging.debug(f"GHAS Comment Required :: {arguments.ghas_comment_required}")
 
 
 def validate_arguments(arguments):
@@ -95,6 +99,7 @@ def setup_app():
         # Team name
         "GHAS_TEAM": arguments.ghas_team_name,
         "GHAS_BOARD_NAME": "GHAS Reviewers Audit Board",
+        "GHAS_COMMENT_REQUIRED": arguments.ghas_comment_required,
         # Tool and severities to check
         "GHAS_TOOL": arguments.ghas_tool_name,
         "GHAS_SEVERITIES": ["critical", "high", "error", "errors"],

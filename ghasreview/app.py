@@ -132,6 +132,21 @@ def onCodeScanningAlertClose():
         f"Processing Alert :: {alert.owner}/{alert.repository} => {alert.id} ({alert.ref})"
     )
 
+    # Check if comment in alert
+    if current_app.config.get("GHAS_COMMENT_REQUIRED") and not alert.hasDismissedComment():
+        logger.debug(f"Comment required, reopeneing alert: {alert.id}")
+
+        open_alert = alert.client.reOpenCodeScanningAlert(
+            alert.owner, alert.repository, alert.id,
+        )
+        if open_alert.status_code != 200:
+            logger.error(f"Unable to re-open alert :: {alert.id}")
+            logger.error("This might be a permissions issue, please check the documentation for more details")
+            return {"message": "Unable to re-open alert"}
+        return {
+            "message": "Comment required, re-opening alert"
+        }
+
     # Check tool and severity
     tool = current_app.config.get("GHAS_TOOL")
     if tool and alert.tool != tool:
