@@ -137,43 +137,36 @@ def onCodeScanningAlertClose():
     if tool and alert.tool != tool:
         logger.debug(f"Tool is not in the list of approved tools: {alert.tool}")
         return {"message": "Tool is not in the list of approved tools"}
+
+    # Severity check, if not high enough, do not involve security team
     severities = current_app.config.get("GHAS_SEVERITIES")
     if severities and alert.severity not in severities:
         logger.debug(
             f"Severity is not high enough to get security involved: {alert.severity}"
         )
-        return {"message": "Severity is not high enough to get security involved"}
+        return {"message": "Severity is not high enough to get security involved, doing nothing."}
 
-    # Check if an org account
-    # try:
-    #     # TODO: Is this needed this org check?
-    #     alert.client.organization(alert.owner)
-    # except Exception:
-    #     logger.debug(f"Non-organization account is using the App, lets do nothing...")
-    #     return {"message": "Non-organization account is using the App. Do nothing."}
-
-    # Check team
+    # Check team exists
     if not alert.client.checkIfTeamExists(alert.owner, config.get("GHAS_TEAM")):
-        alert.createTeam(alert.owner, config.get("GHAS_TEAM"))
-
-    # TODO: Check and Create Project Board
-    # process.createProjectBoard()
+        logger.info(f"GHAS Reviewer Team `{config.get('GHAS_TEAM')}` does not exist, creating team.")
+        alert.client.createTeam(alert.owner, config.get("GHAS_TEAM"))
 
     # check if the user is part of the security team
-    if alert.client.isUserPartOfTeam(alert.owner, alert.getUser()):
+    if alert.client.isUserPartOfTeam(alert.owner, config.get("GHAS_TEAM"), alert.getUser()):
         logger.debug(f"User is part of security team, no action taken.")
         return {"message": "User is part of the security team"}
 
-    logger.debug(f"User is not allowed to close alerts: {alert.getUser()}")
+    logger.info(f"User is not allowed to close alerts: {alert.getUser()} ({alert.owner}/{alert.repository} => {alert.id})")
 
     # Open Alert back up
     open_alert = alert.client.reOpenCodeScanningAlert(
-        alert.owner, alert.repository, alert.id
+        alert.owner, alert.repository, alert.id,
     )
 
     if open_alert.status_code != 200:
-        logger.warning(f"Unable to re-open alert")
-        return
+        logger.error(f"Unable to re-open alert :: {alert.id}")
+        logger.error("This might be a permissions issue, please check the documentation for more details")
+        return {"message": "Unable to re-open alert"}
 
     if alert.isPR():
         logger.debug(f"In PR request")
@@ -183,7 +176,7 @@ def onCodeScanningAlertClose():
 
 @app.errorhandler(500)
 def page_not_found(error):
-    data = {"error": 500}
+    data = {"error": 500, "msg": "Internal Server Error"}
     if app.debug:
         data["msg"] = str(error)
     resp = jsonify(**data)
