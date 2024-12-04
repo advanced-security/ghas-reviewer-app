@@ -38,6 +38,10 @@ class CodeScanningAlert:
             "ref"
         ) or self.payload.get("ref", "")
 
+
+    def hasDismissedComment(self) -> bool:
+        return self.payload.get("dismissed_comment") is not None
+
     @property
     def tool(self) -> str:
         return self.payload.get("alert", {}).get("tool", {}).get("name", "")
