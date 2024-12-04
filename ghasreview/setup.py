@@ -89,6 +89,7 @@ def setup_app():
     setup_logging(arguments)
     app_key = validate_arguments(arguments)
     config = {
+        "GHAS_DEBUG": arguments.debug,
         # Set the route
         "GITHUBAPP_ROUTE": arguments.github_app_endpoint,
         # Team name
