@@ -93,7 +93,11 @@ The application is designed to be run in a container, this allows for easy deplo
 **Pull / Download image:**
 
 ```bash
-# Pull latest (or a release)
+# Pull latest or a release
+docker pull ghcr.io/advanced-security/ghas-reviewer-app:latest
+
+or
+
 docker pull ghcr.io/advanced-security/ghas-reviewer-app:v0.6.0
 ```
 
@@ -116,7 +120,7 @@ docker run \
     --env-file=.env \
     -v ./config:/ghasreview/config \
     -p 9000:9000 \
-    ghcr.io/advanced-security/ghas-reviewer-app:v0.6.0
+    ghcr.io/advanced-security/ghas-reviewer-app:latest # or use release tag, example v0.6.0
 ```
 
 or run it locally
