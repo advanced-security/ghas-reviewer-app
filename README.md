@@ -16,12 +16,6 @@
 GitHub Advanced Security (GHAS) Reviewer App allows security teams to enforces a reviewer to approve and dismiss alerts.
 This allows security experts to provide 4-eyes principle over all security alerts generated in GitHub.
 
-> [!CAUTION]
-> The public GitHub App will be sent security data and is only used for testing purposes.
-> It is recommended to deploy your own instance of the app for production use.
-
-[Public GitHub App](https://github.com/apps/ghas-reviewer)
-
 ## ✨ Features
 
 - Re-open closed alerts if an unapproved users changes the alert
