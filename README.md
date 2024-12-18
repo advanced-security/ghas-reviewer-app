@@ -57,6 +57,8 @@ GITHUB_APP_KEY=-----BEGIN PRIVATE KEY-----\n...
 GITHUB_APP_SECRET=123456789012345678901234567890
 GITHUB_APP_ENDPOINT=/
 GITHUB_GHAS_TEAM="sec_team"
+# GHAS Severities
+GITHUB_GHAS_SEVERITIES="critical,high,error,errors"
 ```
 
 You can also use the following CLI arguments to pass the configuration.
