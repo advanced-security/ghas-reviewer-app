@@ -28,6 +28,11 @@ def parse_arguments():
     parser_github.add_argument(
         "--ghas-comment-required", default=bool(os.environ.get("GITHUB_GHAS_COMMENT_REQUIRED", 0))
     )
+    parser_github.add_argument(
+        "--ghas-severities",
+        nargs="*",
+        default=os.environ.get("GITHUB_GHAS_SEVERITIES", "").split(",") or ["critical", "high", "error", "errors"],
+    )
 
     parser_github = parser.add_argument_group("GitHub")
     parser_github.add_argument(
@@ -63,6 +68,7 @@ def setup_logging(arguments):
     logging.debug(f"GitHub App Secret :: {arguments.github_app_secret}")
     logging.debug(f"GHAS Tool Name :: {arguments.ghas_tool_name}")
     logging.debug(f"GHAS Comment Required :: {arguments.ghas_comment_required}")
+    logging.debug(f"GHAS Severities :: {arguments.ghas_severities}")
 
 
 def validate_arguments(arguments):
@@ -102,7 +108,7 @@ def setup_app():
         "GHAS_COMMENT_REQUIRED": arguments.ghas_comment_required,
         # Tool and severities to check
         "GHAS_TOOL": arguments.ghas_tool_name,
-        "GHAS_SEVERITIES": ["critical", "high", "error", "errors"],
+        "GHAS_SEVERITIES": arguments.ghas_severities if arguments.ghas_severities else None,
         # GitHub App
         "GITHUBAPP_ID": arguments.github_app_id,
         "GITHUBAPP_KEY": app_key,

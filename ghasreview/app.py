@@ -155,11 +155,19 @@ def onCodeScanningAlertClose():
 
     # Severity check, if not high enough, do not involve security team
     severities = current_app.config.get("GHAS_SEVERITIES")
-    if severities and alert.severity not in severities:
-        logger.debug(
-            f"Severity is not high enough to get security involved: {alert.severity}"
-        )
-        return {"message": "Severity is not high enough to get security involved, doing nothing."}
+    if severities:
+        if alert.severity not in severities:
+            logger.debug(
+                f"Severity is not high enough to get security involved: {alert.severity}"
+            )
+            return {"message": "Severity is not high enough to get security involved, doing nothing."}
+        if alert.payload.get("alert", {}).get("rule", {}).get("security_severity_level", "") not in severities:
+            logger.debug(
+                f"Security severity level is not high enough to get security involved: {alert.payload.get('alert', {}).get('rule', {}).get('security_severity_level', '')}"
+            )
+            return {"message": "Security severity level is not high enough to get security involved, doing nothing."}
+    else:
+        logger.debug("No severities provided, reopening all findings")
 
     # Check team exists
     if not alert.client.checkIfTeamExists(alert.owner, config.get("GHAS_TEAM")):
