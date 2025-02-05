@@ -94,7 +94,7 @@ docker pull ghcr.io/advanced-security/ghas-reviewer-app:latest
 
 or
 
-docker pull ghcr.io/advanced-security/ghas-reviewer-app:v0.6.0
+docker pull ghcr.io/advanced-security/ghas-reviewer-app:v0.6.1
 ```
 
 **Or Build From Source:**
