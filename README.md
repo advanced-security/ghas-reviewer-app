@@ -142,7 +142,7 @@ docker-compose up -d
 
 ## Local Development
 
-If you want to run the application locally you can use the following the same steps as abouve meaning you need to creeate an GitHub App, store the private key and set the environment variables.
+If you want to run the application locally you can use the following the same steps as abouve meaning you need to create an GitHub App, store the private key and set the environment variables.
 
 After you have set the environment variables you can run the application using the following commands.
 
