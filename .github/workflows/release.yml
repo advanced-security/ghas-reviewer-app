@@ -18,3 +18,4 @@ jobs:
       contents: write
       packages: write
       attestations: write
+      security-events: write
