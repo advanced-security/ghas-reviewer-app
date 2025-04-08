@@ -13,5 +13,8 @@ jobs:
   build-and-push-image:
     uses: advanced-security/reusable-workflows/.github/workflows/container.yml@main
     secrets: inherit
-    with:
-      sbom: "false"
+    permissions:
+      id-token: write
+      contents: write
+      packages: write
+      attestations: write
