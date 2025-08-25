@@ -1,6 +1,6 @@
 name: "ghas-reviewer-app"
 repository: "advanced-security/ghas-reviewer-app"
-version: "0.6.2"
+version: "0.6.3"
 
 excludes:
   - "/flask_githubapp/"
