@@ -252,11 +252,11 @@
         },
         "fastcore": {
             "hashes": [
-                "sha256:67739747f0f714d02944957271a11dcb4a9dd40012615e6f9d19add3e5d9e041",
-                "sha256:d23e63aff4bcd06dde24cdf9f7ea13c48e7d274ae89e52e826df33c64869c976"
+                "sha256:939f7b79c5510b059ba9fc512dfe8aab30f5a752130a640070f8a1b494493b56",
+                "sha256:f38853245e5ae5abb16275daac92fca00edeced020871b1d2416fb22cde70df8"
             ],
             "markers": "python_version >= '3.9'",
-            "version": "==1.8.0"
+            "version": "==1.8.8"
         },
         "flask": {
             "hashes": [
@@ -269,12 +269,12 @@
         },
         "ghapi": {
             "hashes": [
-                "sha256:64fdd9f06d8e3373065c42c2a03e067e2bbb9ca18b583cd6e38a28aaad0224f6",
-                "sha256:b3d96bf18fcaa2cb7131bad9de2948e2a1c2bb226377a25826f6c80950c57854"
+                "sha256:3e4023f475ec966995dd3feeacd3f42f9e296dd23148e6f28d15e80487300e66",
+                "sha256:9ab02dcd06b3c622ea2d9b21a2efee316076a744ce7847251a2fe9f542f381df"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.7'",
-            "version": "==1.0.6"
+            "version": "==1.0.8"
         },
         "ghastoolkit": {
             "hashes": [
@@ -403,11 +403,11 @@
         },
         "packaging": {
             "hashes": [
-                "sha256:09abb1bccd265c01f4a3aa3f7a7db064b36514d2cba19a2f694fe6150451a759",
-                "sha256:c228a6dc5e932d346bc5739379109d49e8853dd8223571c7c5b55260edc0b97f"
+                "sha256:29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484",
+                "sha256:d443872c98d677bf60f6a1f2f8c1cb748e8fe762d2bf9d3148b5599295b0fc4f"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==24.2"
+            "version": "==25.0"
         },
         "pycparser": {
             "hashes": [
