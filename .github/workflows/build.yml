@@ -10,6 +10,9 @@ on:
 
 jobs:
   container:
+    permissions:
+      contents: read
+      security-events: write
     uses: advanced-security/reusable-workflows/.github/workflows/container-security.yml@main
     secrets: inherit
 
