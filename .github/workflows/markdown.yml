@@ -8,5 +8,7 @@ on:
 
 jobs:
   lint:
+    permissions:
+      contents: read
     uses: advanced-security/reusable-workflows/.github/workflows/markdown-lint.yml@main
     secrets: inherit
