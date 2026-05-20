@@ -1,72 +1,77 @@
 version: 2
 updates:
-  # ---------- GitHub Actions ----------
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    reviewers:
-      - "advanced-security/oss-maintainers"
-    target-branch: "main"
-    commit-message:
-      prefix: deps
-      prefix-development: chore
-    labels:
-      - "Dependencies"
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-      development-dependencies:
-        dependency-type: "development"
-
-  # ---------- Rust / Cargo ----------
-  - package-ecosystem: "cargo"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    reviewers:
-      - "advanced-security/oss-maintainers"
-    target-branch: "main"
-    commit-message:
-      prefix: deps
-      prefix-development: chore
-    labels:
-      - "Dependencies"
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-      development-dependencies:
-        dependency-type: "development"
-
-  # ---------- Python / Pip ----------
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    reviewers:
-      - "advanced-security/oss-maintainers"
-    target-branch: "main"
-    commit-message:
-      prefix: deps
-      prefix-development: chore
-    labels:
-      - "Dependencies"
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-      development-dependencies:
-        dependency-type: "development"
-
-# ---------- Docker ----------
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: weekly
-    reviewers:
-      - "advanced-security/oss-maintainers"
-    target-branch: "main"
-    commit-message:
-      prefix: deps
-      prefix-development: chore
-    labels:
-      - "Dependencies"  
+- package-ecosystem: github-actions
+  directory: /
+  schedule:
+    interval: weekly
+  reviewers:
+  - advanced-security/oss-maintainers
+  target-branch: main
+  commit-message:
+    prefix: deps
+    prefix-development: chore
+  labels:
+  - Dependencies
+  groups:
+    actions:
+      patterns:
+      - '*'
+  cooldown:
+    default-days: 3
+- package-ecosystem: cargo
+  directory: /
+  schedule:
+    interval: weekly
+  reviewers:
+  - advanced-security/oss-maintainers
+  target-branch: main
+  commit-message:
+    prefix: deps
+    prefix-development: chore
+  labels:
+  - Dependencies
+  groups:
+    production-dependencies:
+      dependency-type: production
+    development-dependencies:
+      dependency-type: development
+  cooldown:
+    default-days: 3
+- package-ecosystem: pip
+  directory: /
+  schedule:
+    interval: weekly
+  reviewers:
+  - advanced-security/oss-maintainers
+  target-branch: main
+  commit-message:
+    prefix: deps
+    prefix-development: chore
+  labels:
+  - Dependencies
+  groups:
+    production-dependencies:
+      dependency-type: production
+    development-dependencies:
+      dependency-type: development
+  cooldown:
+    default-days: 3
+- package-ecosystem: docker
+  directory: /
+  schedule:
+    interval: weekly
+  reviewers:
+  - advanced-security/oss-maintainers
+  target-branch: main
+  commit-message:
+    prefix: deps
+    prefix-development: chore
+  labels:
+  - Dependencies
+  cooldown:
+    default-days: 3
+  groups:
+    production-dependencies:
+      dependency-type: production
+    development-dependencies:
+      dependency-type: development
