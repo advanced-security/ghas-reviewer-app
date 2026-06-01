@@ -73,8 +73,8 @@ def setup_logging(arguments):
 
 def validate_arguments(arguments):
     if arguments.test_mode:
-        logging.info(f"Testing mode enabled, exiting...")
-        exit(0)
+        logging.info("Testing mode enabled")
+        return "test-key"
     if not arguments.github_app_id:
         raise Exception(f"GitHub App ID not set")
     if not arguments.github_app_secret:
@@ -101,7 +101,7 @@ def setup_app():
     config = {
         "GHAS_DEBUG": arguments.debug,
         # Set the route
-        "GITHUBAPP_ROUTE": arguments.github_app_endpoint,
+        "GITHUBAPP_ROUTE": arguments.github_app_endpoint or "/",
         # Team name
         "GHAS_TEAM": arguments.ghas_team_name,
         "GHAS_BOARD_NAME": "GHAS Reviewers Audit Board",
