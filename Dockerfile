@@ -1,4 +1,4 @@
-FROM python:3.14.7-alpine
+FROM python:3.14.8-alpine
 
 ARG user=python
 ARG home=/home/$user
