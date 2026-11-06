@@ -1,4 +1,4 @@
-FROM python:3.14.8-alpine
+FROM python:3.15.0-alpine
 
 ARG user=python
 ARG home=/home/$user
@@ -16,7 +16,10 @@ WORKDIR /ghasreview
 COPY . .
 
 ENV PYTHONPATH="/ghasreview"
-RUN python3 -m pip install pipenv && \
-    python3 -m pipenv sync --system 
+USER root
+RUN apk add --no-cache --virtual .build-deps gcc musl-dev libffi-dev && \
+    su python -s /bin/sh -c 'python3 -m pip install pipenv && python3 -m pipenv sync --system' && \
+    apk del .build-deps
+USER python
 
 CMD ["pipenv", "run", "production"]
