@@ -48,7 +48,7 @@ Store the App key so the service can read it from the path provided along with t
 
 **Environment Variable:**
 
-Create a `.env` file in the root of the project with the following environment variables.
+Create a `.env` file in the root of the project with the following environment variables. See:
 
 ```env
 # Application ID
