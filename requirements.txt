@@ -357,15 +357,15 @@ exceptiongroup==1.3.1 \
     --hash=sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219 \
     --hash=sha256:a7a39a3bd276781e98394987d3a5701d0c4edffb633bb7a5144577f82c773598
     # via anyio
-fastcore==2.2.37 \
-    --hash=sha256:9c1427320199ee92ccec58b5e768015d85f2d996eb9faad3f294ee911a8e1624 \
-    --hash=sha256:ba755eae6b036c26870a8c48d2b92cc119756ff22e3574014df9c299da6ae1a9
+fastcore==2.2.39 \
+    --hash=sha256:defb4e009c028b43612d3838424d0adf7f04857e200f46215ee679b2c6018b05 \
+    --hash=sha256:f17f6afa26fb11a1d5467ba8aed642fec1fd91681edb3840a097941b90e8783a
     # via
     #   fastspec
     #   fasttransport
-fastspec==0.2.6 \
-    --hash=sha256:675025b7e0596af986ac1eec961790b6a129f3b80ac74dc7eca8b2d80d34b3c5 \
-    --hash=sha256:cdbcfe3ebe129cbccde8182a9456332b5cf5c5db75ea14321f464f0a1c31f20e
+fastspec==0.2.7 \
+    --hash=sha256:7eded18528243366aca9ff48340e81fd8046b8348dab37c08f0e817f7776b8dd \
+    --hash=sha256:dd43873294c0abd3b995459706168c4b17aad2154e30e9213129461c6b422ab7
     # via ghapi
 fasttransport==0.0.4 \
     --hash=sha256:0cbd1fa9aa4ba3aedd7fdc525bb7796004a35ced854d5d4770f9ba0f133d8f85 \
