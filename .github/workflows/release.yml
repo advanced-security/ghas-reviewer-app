@@ -21,6 +21,7 @@ jobs:
       publish: ${{ steps.version.outputs.publish }}
     permissions:
       contents: read
+      packages: read
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -58,6 +59,37 @@ jobs:
               exit 1
             fi
           fi
+
+          image="${GITHUB_REPOSITORY,,}"
+          registry_token=$(curl --fail --silent --show-error --get \
+            --user "$GITHUB_ACTOR:$GH_TOKEN" \
+            --data-urlencode "service=ghcr.io" \
+            --data-urlencode "scope=repository:$image:pull" \
+            https://ghcr.io/token | jq --exit-status --raw-output '.token | select(type == "string" and length > 0)')
+          echo "::add-mask::$registry_token"
+          response_file="$RUNNER_TEMP/release-manifest.json"
+          for tag in "$version" "v$version"; do
+            status=$(curl --silent --show-error --output "$response_file" --write-out '%{http_code}' \
+              --header "Authorization: Bearer $registry_token" \
+              --header "Accept: application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.docker.distribution.manifest.v2+json" \
+              "https://ghcr.io/v2/$image/manifests/$tag")
+            case "$status" in
+              200)
+                echo "::error::Image ghcr.io/$image:$tag already exists; verify it and backfill its release, or bump the version. Versioned images must not be overwritten."
+                exit 1
+                ;;
+              404)
+                if ! jq --exit-status '.errors | any(.code == "MANIFEST_UNKNOWN" or .code == "NAME_UNKNOWN")' "$response_file" > /dev/null; then
+                  echo "::error::Unexpected registry response while checking $tag; refusing to publish."
+                  exit 1
+                fi
+                ;;
+              *)
+                echo "::error::Registry check for $tag failed with HTTP $status; refusing to publish."
+                exit 1
+                ;;
+            esac
+          done
           echo "publish=true" >> "$GITHUB_OUTPUT"
 
   scan-image:

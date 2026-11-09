@@ -190,10 +190,16 @@ tags such as `v0` and `v0.6`. Use an image digest for immutable deployments.
 
 Release runs are serialized. An already-published GitHub release is skipped, and
 an existing version tag pointing to a different commit blocks publication.
-Manually dispatch the Release workflow on `main` to retry a failed release.
-If image publication succeeds but GitHub release creation fails, retry before
-merging more changes: a retry can rebuild the image, and a conflicting version
-tag requires a new version rather than moving the existing tag.
+Before publishing, the workflow checks both full-version GHCR tags (for example,
+`0.6.4` and `v0.6.4`) and refuses to overwrite either one. Registry authentication,
+network, and unexpected response errors also block publication.
+
+Manually dispatch the Release workflow on `main` to retry a failure that happened
+before an image was published. If the image already exists but its GitHub release
+is missing, verify the image digest and source revision, then create the release
+at that original source commit and record the image digest in its notes. Do not
+rebuild under the same version; a retry will refuse to overwrite the image.
+Publish changed content under a new version instead.
 
 ## Support
 
