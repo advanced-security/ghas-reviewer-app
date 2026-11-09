@@ -170,6 +170,31 @@ pipenv run develop
 - [@GeekMasher](https://github.com/GeekMasher) - Author / Core Maintainer
 - [@theztefan](https://github.com/theztefan) - Contributor
 
+## Releases
+
+The container image is the deployable application. A GitHub release records the
+matching source version and generated release notes; it is not a separate binary
+distribution.
+
+To release a new version, update `.release.yml`, `ghasreview/__init__.py`, and the
+versioned Docker pull example above in a PR targeting `main`. After merging, the
+Release workflow reads the explicit version from `.release.yml`, scans the
+container, publishes it to GHCR, and then calls the shared
+[GitHub release workflow](https://github.com/advanced-security/reusable-workflows/blob/main/.github/workflows/release.yml)
+to tag the same commit and create the GitHub release. Scan findings are reported
+but do not block publication, matching the existing scanning policy.
+
+The image receives `0.6.4` and `v0.6.4` style version tags, plus floating `v0`,
+`v0.6`, and `latest` tags. The shared release workflow also updates floating Git
+tags such as `v0` and `v0.6`. Use an image digest for immutable deployments.
+
+Release runs are serialized. An already-published GitHub release is skipped, and
+an existing version tag pointing to a different commit blocks publication.
+Manually dispatch the Release workflow on `main` to retry a failed release.
+If image publication succeeds but GitHub release creation fails, retry before
+merging more changes: a retry can rebuild the image, and a conflicting version
+tag requires a new version rather than moving the existing tag.
+
 ## Support
 
 Please create [GitHub Issues][github-issues] if there are bugs or feature requests.

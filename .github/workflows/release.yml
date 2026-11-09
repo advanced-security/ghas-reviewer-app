@@ -5,17 +5,90 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
 
 jobs:
-  build-and-push-image:
-    uses: advanced-security/reusable-workflows/.github/workflows/container.yml@main
+  prepare-release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      publish: ${{ steps.version.outputs.publish }}
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Resolve release version
+        id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(ruby -ryaml -e 'puts YAML.safe_load_file(".release.yml").fetch("version")')
+          if [[ ! "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            echo "::error::Expected a stable semantic version in .release.yml"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+          released=$(gh api --paginate "/repos/$GITHUB_REPOSITORY/releases?per_page=100" \
+            --jq ".[] | select(.tag_name == \"v$version\") | .draft")
+          if [[ "$released" == "false" ]]; then
+            echo "Release v$version already exists; skipping publication."
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          elif [[ "$released" == "true" ]]; then
+            echo "::error::A draft release already exists for v$version; resolve it before publishing."
+            exit 1
+          fi
+
+          # The reusable release workflow force-updates tags; never move a version tag.
+          if git show-ref --verify --quiet "refs/tags/v$version"; then
+            tagged_commit=$(git rev-parse "refs/tags/v${version}^{commit}")
+            if [[ "$tagged_commit" != "$GITHUB_SHA" ]]; then
+              echo "::error::Tag v$version already points to another commit; bump the version."
+              exit 1
+            fi
+          fi
+          echo "publish=true" >> "$GITHUB_OUTPUT"
+
+  scan-image:
+    needs: prepare-release
+    if: needs.prepare-release.outputs.publish == 'true'
+    uses: advanced-security/reusable-workflows/.github/workflows/container-security.yml@d17063db5dc48cd6e9b704b3564d43fcf5b66e51
+    secrets: inherit
+    permissions:
+      contents: read
+      security-events: write
+    with:
+      version: ${{ needs.prepare-release.outputs.version }}
+
+  publish-image:
+    needs: [prepare-release, scan-image]
+    uses: advanced-security/reusable-workflows/.github/workflows/container-publish.yml@d17063db5dc48cd6e9b704b3564d43fcf5b66e51
     secrets: inherit
     permissions:
       id-token: write
       contents: write
       packages: write
       attestations: write
-      security-events: write
+    with:
+      version: ${{ needs.prepare-release.outputs.version }}
+
+  github-release:
+    needs: [prepare-release, publish-image]
+    uses: advanced-security/reusable-workflows/.github/workflows/release.yml@d17063db5dc48cd6e9b704b3564d43fcf5b66e51
+    permissions:
+      contents: write
+      # Required by the shared workflow's optional README-update job.
+      pull-requests: write
+    with:
+      version: ${{ needs.prepare-release.outputs.version }}
