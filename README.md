@@ -176,10 +176,14 @@ The container image is the deployable application. A GitHub release records the
 matching source version and generated release notes; it is not a separate binary
 distribution.
 
-To release a new version, update `.release.yml`, `ghasreview/__init__.py`, and the
-versioned Docker pull example above in a PR targeting `main`. After merging, the
-Release workflow reads the explicit version from `.release.yml`, scans the
-container, publishes it to GHCR, and then calls the shared
+To release a new version, run the Release workflow manually on `main` and set
+`bump` to `patch`, `minor`, or `major`. It opens a PR that updates `.release.yml`,
+`ghasreview/__init__.py`, and the versioned Docker pull example above. The PR is
+opened with the default `GITHUB_TOKEN`, so GitHub does not start its checks
+automatically; close and reopen it to run them before merging. Updating those
+files by hand in a PR targeting `main` works too. After merging, the Release
+workflow reads the explicit version from `.release.yml`, scans the container,
+publishes it to GHCR, and then calls the shared
 [GitHub release workflow](https://github.com/advanced-security/reusable-workflows/blob/main/.github/workflows/release.yml)
 to tag the same commit and create the GitHub release. Scan findings are reported
 but do not block publication, matching the existing scanning policy.
@@ -194,12 +198,13 @@ Before publishing, the workflow checks both full-version GHCR tags (for example,
 `0.6.4` and `v0.6.4`) and refuses to overwrite either one. Registry authentication,
 network, and unexpected response errors also block publication.
 
-Manually dispatch the Release workflow on `main` to retry a failure that happened
-before an image was published. If the image already exists but its GitHub release
-is missing, verify the image digest and source revision, then create the release
-at that original source commit and record the image digest in its notes. Do not
-rebuild under the same version; a retry will refuse to overwrite the image.
-Publish changed content under a new version instead.
+Manually dispatch the Release workflow on `main` with `bump` left as `none` to
+retry a failure that happened before an image was published. If the image already
+exists but its GitHub release is missing, verify the image digest and source
+revision, then create the release at that original source commit and record the
+image digest in its notes. Do not rebuild under the same version; a retry will
+refuse to overwrite the image. Publish changed content under a new version
+instead.
 
 ## Support
 
