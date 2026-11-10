@@ -4,6 +4,16 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+    inputs:
+      bump:
+        description: "Open a PR that bumps the version in .release.yml. Use none to publish the version already in .release.yml."
+        type: choice
+        options:
+          - none
+          - patch
+          - minor
+          - major
+        default: none
 
 concurrency:
   group: release
@@ -13,8 +23,59 @@ permissions:
   contents: read
 
 jobs:
+  # A manual bump only opens a PR. Merging it to main starts the publish jobs below.
+  bump-version:
+    if: github.event_name == 'workflow_dispatch' && inputs.bump != 'none' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # push the version bump branch
+      pull-requests: write # open the version bump PR
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          # create-pull-request configures its own credentials from the token input.
+          persist-credentials: false
+
+      # Updates .release.yml, ghasreview/__init__.py and the versioned docker pull example in README.md.
+      - name: Bump version
+        # TODO: Return to the upstream action after its runtime image is digest-pinned:
+        # https://github.com/42ByteLabs/patch-release-me/issues/169
+        uses: docker://ghcr.io/42bytelabs/patch-release-me:0.6.7@sha256:b9624359ce08707dfb4d22bcbf9d1a75f7f4718ccec610ddaa62280ffea98958
+        with:
+          args: --disable-banner bump -m ${{ inputs.bump }}
+
+      - name: Read bumped version
+        id: version
+        run: |
+          version=$(ruby -ryaml -e 'puts YAML.safe_load_file(".release.yml").fetch("version")')
+          if [[ ! "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            echo "::error::Expected a stable semantic version in .release.yml after the bump"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Create release pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          # Pull requests opened with GITHUB_TOKEN do not trigger pull_request workflows.
+          token: ${{ github.token }}
+          base: main
+          branch: chore/release-v${{ steps.version.outputs.version }}
+          commit-message: "chore: bump version to v${{ steps.version.outputs.version }}"
+          title: "chore: bump version to v${{ steps.version.outputs.version }}"
+          body: |
+            Automated pull request to bump the release version to `v${{ steps.version.outputs.version }}` (${{ inputs.bump }} bump).
+
+            It updates `.release.yml`, `ghasreview/__init__.py`, and the versioned Docker pull example in `README.md`.
+
+            Merging this pull request to `main` starts the Release workflow, which scans and publishes the container image and then creates the GitHub release.
+
+            > [!NOTE]
+            > This pull request was opened with the default `GITHUB_TOKEN`, so GitHub does not start its checks automatically. Close and reopen it to run them before merging.
+
   prepare-release:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.bump == 'none')
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
