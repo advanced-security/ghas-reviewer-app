@@ -56,7 +56,7 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Create release pull request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           # Pull requests opened with GITHUB_TOKEN do not trigger pull_request workflows.
           token: ${{ github.token }}
@@ -156,7 +156,7 @@ jobs:
   scan-image:
     needs: prepare-release
     if: needs.prepare-release.outputs.publish == 'true'
-    uses: advanced-security/reusable-workflows/.github/workflows/container-security.yml@d17063db5dc48cd6e9b704b3564d43fcf5b66e51
+    uses: advanced-security/reusable-workflows/.github/workflows/container-security.yml@5d9b67c7060163b2e0230582f3a95729b5d79456
     secrets: inherit
     permissions:
       contents: read
@@ -166,7 +166,7 @@ jobs:
 
   publish-image:
     needs: [prepare-release, scan-image]
-    uses: advanced-security/reusable-workflows/.github/workflows/container-publish.yml@d17063db5dc48cd6e9b704b3564d43fcf5b66e51
+    uses: advanced-security/reusable-workflows/.github/workflows/container-publish.yml@5d9b67c7060163b2e0230582f3a95729b5d79456
     secrets: inherit
     permissions:
       id-token: write
@@ -178,7 +178,7 @@ jobs:
 
   github-release:
     needs: [prepare-release, publish-image]
-    uses: advanced-security/reusable-workflows/.github/workflows/release.yml@d17063db5dc48cd6e9b704b3564d43fcf5b66e51
+    uses: advanced-security/reusable-workflows/.github/workflows/release.yml@5d9b67c7060163b2e0230582f3a95729b5d79456
     permissions:
       contents: write
       # Required by the shared workflow's optional README-update job.
